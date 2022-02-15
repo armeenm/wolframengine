@@ -35,7 +35,7 @@
 , xorg
 , zlib
 , installerFile ? "WolframEngine_13.0.0_LINUX.sh"
-, installerSha256 ? ""
+, installerSha256 ? "38783c9334944aa7ae095d216c934e145edce7eb06361c85f89ddef429e59781"
 }:
 
 stdenv.mkDerivation rec {
@@ -118,7 +118,7 @@ stdenv.mkDerivation rec {
     cd "$TMPDIR/Unix/Installer"
 
     mkdir -p "$out/lib/udev/rules.d"
-fail
+
     # Remove PATH restriction, root and avahi daemon checks, and hostname call
     sed -i '
       s/^PATH=/# &/
