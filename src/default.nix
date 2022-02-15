@@ -5,6 +5,7 @@
 , makeWrapper
 , requireFile
 , alsa-lib
+, coreutils
 , cups
 , dbus
 , flite
@@ -13,6 +14,8 @@
 , gcc-unwrapped
 , glib
 , gmpxx
+, gnugrep
+, jdk11
 , keyutils
 , libGL
 , libGLU
@@ -26,7 +29,6 @@
 , mpfr
 , ncurses
 , opencv4
-, openjdk11
 , openssl
 , pciutils
 , tre
@@ -75,7 +77,7 @@ stdenv.mkDerivation rec {
     mpfr
     ncurses
     opencv4
-    openjdk11
+    jdk11
     openssl
     pciutils
     tre
@@ -145,6 +147,15 @@ stdenv.mkDerivation rec {
 
     runHook postInstall
   '';
+
+  wrapProgramFlags = [
+    "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ gcc-unwrapped.lib zlib ]}"
+    "--prefix PATH : ${lib.makeBinPath [ coreutils gnugrep stdenv.cc ]}"
+    # Fix libQt errors - #96490
+    "--set USE_WOLFRAM_LD_LIBRARY_PATH 1"
+    # Fix xkeyboard config path for Qt
+    "--set QT_XKB_CONFIG_ROOT ${xkeyboard_config}/share/X11/xkb"
+  ];
 
   preFixup = ''
     for bin in $out/libexec/Mathematica/Executables/*; do
